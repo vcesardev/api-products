@@ -1,33 +1,59 @@
 import { Injectable } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
+
 import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
+import { PrismaService } from '../prisma/prisma.service';
+import { ICreateProductDTO } from './dtos/ICreateProductDTO';
 
 @Injectable()
 export class ProductService {
+  constructor(private prismaService: PrismaService) {}
   async listProducts() {
-    return 'products listing';
+    return this.prismaService.product.findMany({
+      include: { components: true },
+    });
   }
 
   async findProduct(id: string) {
-    return `product ${id}`;
+    return this.prismaService.product.findFirst({
+      where: { id: id },
+      include: { components: true },
+    });
   }
 
-  async createProduct(id: string) {
-    return 'product created';
+  async createProduct(data: ICreateProductDTO) {
+    return this.prismaService.product.create({
+      data: {
+        ...data,
+        id: uuidv4(),
+      },
+    });
   }
 
   async findComponent(id: string, index: string) {
-    return `component ${id} - ${index}`;
+    return this.prismaService.product.findFirst({
+      where: { id: id },
+      select: { components: { where: { index: index } } },
+    });
   }
 
-  async createComponent(data: ICreateComponentDTO) {
-    return data;
+  async createComponent(data: ICreateComponentDTO, productId: string) {
+    return this.prismaService.component.create({
+      data: {
+        ...data,
+        id: uuidv4(),
+        product: { connect: { id: productId } },
+      },
+    });
   }
 
   async listProductComponents(id: string) {
-    return `list components from product ${id}`;
+    return this.prismaService.component.findMany({ where: { productId: id } });
   }
 
   async findComponentByDescription(description: string) {
-    return `component: ${description}`;
+    return this.prismaService.component.findMany({
+      where: { description: { contains: description } },
+    });
   }
 }

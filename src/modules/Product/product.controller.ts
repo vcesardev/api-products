@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Param, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Query, Req } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
+import { ICreateProductDTO } from './dtos/ICreateProductDTO';
 
 @Controller('api/v1/produto')
 export class ProductController {
@@ -18,7 +19,7 @@ export class ProductController {
   }
   //   create
   @Post()
-  async create(@Body() body) {
+  async create(@Body() body: ICreateProductDTO) {
     return this.productService.createProduct(body);
   }
 
@@ -31,8 +32,9 @@ export class ProductController {
 
   //   create components
   @Post(':id/componente')
-  async createComponent(@Body() body: ICreateComponentDTO) {
-    return this.productService.createComponent(body);
+  async createComponent(@Param() params, @Body() body: ICreateComponentDTO) {
+    const { id } = params;
+    return this.productService.createComponent(body, id);
   }
 
   //   list components in a prouct
@@ -42,10 +44,8 @@ export class ProductController {
     return this.productService.listProductComponents(id);
   }
 
-  @Get('componente')
-  async findComponent(@Query() query) {
-    const { description } = query;
-
-    return description;
+  @Get('/componente/filter')
+  async findComponent(@Query('description') description: string) {
+    return this.productService.findComponentByDescription(description);
   }
 }
