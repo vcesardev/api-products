@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
 
 @Injectable()
 export class ProductService {
@@ -18,8 +19,8 @@ export class ProductService {
     return `component ${id} - ${index}`;
   }
 
-  async createComponent(id: string) {
-    return 'component created';
+  async createComponent(data: ICreateComponentDTO) {
+    return data;
   }
 
   async listProductComponents(id: string) {

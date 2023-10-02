@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Param, Body, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
+import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
 
 @Controller('api/v1/produto')
 export class ProductController {
@@ -30,7 +31,7 @@ export class ProductController {
 
   //   create components
   @Post(':id/componente')
-  async createComponent(@Body() body) {
+  async createComponent(@Body() body: ICreateComponentDTO) {
     return this.productService.createComponent(body);
   }
 
