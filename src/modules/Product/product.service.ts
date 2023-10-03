@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
 import { PrismaService } from '../prisma/prisma.service';
 import { ICreateProductDTO } from './dtos/ICreateProductDTO';
+import { IUpdateProductDTO } from './dtos/IUpdateProductDTO';
 
 @Injectable()
 export class ProductService {
@@ -27,6 +28,19 @@ export class ProductService {
         ...data,
         id: uuidv4(),
       },
+    });
+  }
+
+  async updateProduct(data: IUpdateProductDTO, productId: string) {
+    return this.prismaService.product.update({
+      where: { id: productId },
+      data: { ...data, updatedAt: new Date() },
+    });
+  }
+
+  async deleteProduct(productId: string) {
+    return this.prismaService.product.delete({
+      where: { id: productId },
     });
   }
 
@@ -54,6 +68,13 @@ export class ProductService {
   async findComponentByDescription(description: string) {
     return this.prismaService.component.findMany({
       where: { description: { contains: description } },
+    });
+  }
+
+  async updateComponent(data: IUpdateProductDTO, componentId: string) {
+    return this.prismaService.component.update({
+      where: { id: componentId },
+      data: { ...data, updatedAt: new Date() },
     });
   }
 }

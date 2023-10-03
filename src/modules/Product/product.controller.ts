@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Param, Body, Query, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  Query,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ICreateComponentDTO } from './dtos/ICreateComponentDTO';
 import { ICreateProductDTO } from './dtos/ICreateProductDTO';
+import { IUpdateProductDTO } from './dtos/IUpdateProductDTO';
 
 @Controller('api/v1/produto')
 export class ProductController {
@@ -22,6 +32,18 @@ export class ProductController {
   async create(@Body() body: ICreateProductDTO) {
     return this.productService.createProduct(body);
   }
+  // edit product
+  @Patch(':id')
+  async edit(@Body() body: IUpdateProductDTO, @Param('id') productId: string) {
+    return this.productService.updateProduct(body, productId);
+  }
+  // delete product
+  @Delete(':id')
+  async deleteProduct(@Param('id') productId: string) {
+    return this.productService.deleteProduct(productId);
+  }
+
+  //  ------ component
 
   //   find component
   @Get(':id/componente/:index')
