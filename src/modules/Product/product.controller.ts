@@ -19,8 +19,8 @@ export class ProductController {
   constructor(private productService: ProductService) {}
   // list
   @Get()
-  async list() {
-    return this.productService.listProducts();
+  async list(@Query('page') page: string, @Query('count') count: string) {
+    return this.productService.listProducts(Number(page), Number(count));
   }
   //    find
   @Get(':productCode')

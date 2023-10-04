@@ -39,13 +39,24 @@ export class ProductService {
     return item;
   }
 
-  async listProducts() {
+  async listProducts(pageAmount?: number, count?: number) {
+    const page = pageAmount || 1;
+    const amount = count || 5;
+    const skip = (page - 1) * count;
     try {
-      return this.prismaService.product.findMany({
+      const items = await this.prismaService.product.findMany({
         include: { components: true },
+        take: amount,
+        skip: skip,
       });
+
+      return {
+        page,
+        perPage: amount,
+        items,
+      };
     } catch (e) {
-      throw new BadRequestException('Não foi possível realizar a solicitação.');
+      throw new BadRequestException(e.message);
     }
   }
 
